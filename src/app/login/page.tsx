@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { AuthForm } from "@/components/auth-form";
 
 export default function LoginPage() {
   return (
@@ -17,12 +18,7 @@ export default function LoginPage() {
           <p className="mt-10 text-sm font-semibold uppercase tracking-[0.16em] text-violet-600">Welcome back</p>
           <h2 className="mt-2 text-4xl font-semibold tracking-tight">Sign in to your workspace</h2>
           <p className="mt-3 text-slate-500">Manage the work that moves your business forward.</p>
-          <label className="mt-10 block text-sm font-semibold">Email address</label>
-          <input type="email" placeholder="you@company.ae" className="mt-2 w-full rounded-xl border border-slate-300 px-4 py-3 outline-none transition focus:border-violet-500 focus:ring-4 focus:ring-violet-100" />
-          <label className="mt-5 block text-sm font-semibold">Password</label>
-          <input type="password" placeholder="••••••••" className="mt-2 w-full rounded-xl border border-slate-300 px-4 py-3 outline-none transition focus:border-violet-500 focus:ring-4 focus:ring-violet-100" />
-          <button type="button" className="mt-7 w-full rounded-xl bg-slate-950 px-4 py-3 font-semibold text-white transition hover:bg-slate-800">Sign in</button>
-          <p className="mt-6 text-center text-sm text-slate-500">New to 3DOT? <Link href="/onboarding" className="font-semibold text-violet-700">Create your company workspace</Link></p>
+          <AuthForm />
         </form>
       </section>
     </main>
