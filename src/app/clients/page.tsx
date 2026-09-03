@@ -1,2 +1,2 @@
-import { ResourcePage } from "@/components/resource-page";
-export default function ClientsPage() { return <ResourcePage title="Clients" description="Keep every client contact and account in one place." action="Add client" columns={["Client", "Contact", "Status", "Open balance"]} rows={[{name:"Emaar Properties",meta:"Nadia Saeed · nadia@emaar.ae",status:"Active",amount:"AED 84,000"},{name:"Al Futtaim Group",meta:"Omar Khalid · omar@alfuttaim.ae",status:"Active",amount:"AED 52,400"},{name:"Private Client — JVC",meta:"Ahmed Rashid · +971 50 000 0000",status:"Lead",amount:"AED 0"}]} />; }
+import { CompanyResource } from "@/components/company-resource";
+export default function ClientsPage() { return <CompanyResource type="clients" />; }
