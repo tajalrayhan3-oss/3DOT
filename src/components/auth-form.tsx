@@ -60,7 +60,9 @@ export function AuthForm() {
     <label className="mt-5 block text-sm font-semibold">Password</label>
     <div className="relative mt-2">
       <input value={password} onChange={(event) => setPassword(event.target.value)} type={showPassword ? "text" : "password"} minLength={6} placeholder="At least 6 characters" className="w-full rounded-xl border border-slate-300 px-4 py-3 pr-14 outline-none transition focus:border-violet-500 focus:ring-4 focus:ring-violet-100" />
-      <button type="button" onClick={() => setShowPassword(!showPassword)} aria-label={showPassword ? "Hide password" : "Show password"} className="absolute inset-y-0 right-0 px-4 text-sm font-semibold text-violet-700">{showPassword ? "Hide" : "Show"}</button>
+      <button type="button" onClick={() => setShowPassword(!showPassword)} aria-label={showPassword ? "Hide password" : "Show password"} className="absolute inset-y-0 right-0 grid w-12 place-items-center text-violet-700">
+        {showPassword ? <svg viewBox="0 0 24 24" aria-hidden="true" className="h-5 w-5 fill-none stroke-current" strokeWidth="2"><path d="m3 3 18 18M10.6 10.7a2 2 0 0 0 2.7 2.7M9.9 4.2A10.7 10.7 0 0 1 12 4c5.2 0 8.7 4.2 9.7 6.1a1.9 1.9 0 0 1 0 1.8 18 18 0 0 1-3.2 4.1M6.6 6.6a18 18 0 0 0-4.3 3.5 1.9 1.9 0 0 0 0 1.8C3.3 13.8 6.8 18 12 18c.9 0 1.8-.1 2.6-.4" /></svg> : <svg viewBox="0 0 24 24" aria-hidden="true" className="h-5 w-5 fill-none stroke-current" strokeWidth="2"><path d="M2.3 12.1a1.9 1.9 0 0 1 0-1.8C3.3 8.2 6.8 4 12 4s8.7 4.2 9.7 6.3a1.9 1.9 0 0 1 0 1.8C20.7 15.2 17.2 19 12 19S3.3 15.2 2.3 12.1Z" /><circle cx="12" cy="11" r="3" /></svg>}
+      </button>
     </div>
     {message && <p className="mt-4 rounded-lg bg-violet-50 p-3 text-sm text-violet-800">{message}</p>}
     <button onClick={submit} disabled={loading} className="mt-7 w-full rounded-xl bg-slate-950 px-4 py-3 font-semibold text-white transition hover:bg-slate-800 disabled:opacity-60">{loading ? "Please wait..." : mode === "signin" ? "Sign in" : "Create account"}</button>
