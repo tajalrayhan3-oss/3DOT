@@ -9,6 +9,8 @@ export function AuthForm() {
   const [mode, setMode] = useState<"signin" | "signup">("signup");
   const [message, setMessage] = useState("");
   const [loading, setLoading] = useState(false);
+  const [verificationCode, setVerificationCode] = useState("");
+  const [awaitingCode, setAwaitingCode] = useState(false);
 
   useEffect(() => {
     if (window.localStorage.getItem("3dot-has-account") === "true") setMode("signin");
@@ -26,10 +28,26 @@ export function AuthForm() {
       window.location.href = "/dashboard";
     } else {
       window.localStorage.setItem("3dot-has-account", "true");
-      setMessage("Account created. Check your email to confirm your address, then sign in.");
-      setMode("signin");
+      setMessage("We sent a 6-digit code to your email.");
+      setAwaitingCode(true);
     }
   }
+
+  async function confirmCode() {
+    setLoading(true); setMessage("");
+    const { error } = await supabase.auth.verifyOtp({ email, token: verificationCode, type: "email" });
+    setLoading(false);
+    if (error) return setMessage(error.message);
+    window.localStorage.setItem("3dot-has-account", "true");
+    window.location.href = "/onboarding";
+  }
+
+  if (awaitingCode) return <div>
+    <p className="mt-10 text-sm font-semibold">Enter the 6-digit code sent to {email}</p>
+    <input value={verificationCode} onChange={(event) => setVerificationCode(event.target.value.replace(/\D/g, "").slice(0, 6))} inputMode="numeric" autoComplete="one-time-code" placeholder="123456" className="mt-3 w-full rounded-xl border border-slate-300 px-4 py-3 text-center text-xl tracking-[0.5em] outline-none focus:border-violet-500" />
+    {message && <p className="mt-4 rounded-lg bg-violet-50 p-3 text-sm text-violet-800">{message}</p>}
+    <button onClick={confirmCode} disabled={loading || verificationCode.length !== 6} className="mt-5 w-full rounded-xl bg-slate-950 px-4 py-3 font-semibold text-white disabled:opacity-60">{loading ? "Checking code..." : "Verify code"}</button>
+  </div>;
 
   return <div>
     <label className="mt-10 block text-sm font-semibold">Email address</label>
