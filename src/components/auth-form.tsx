@@ -11,6 +11,7 @@ export function AuthForm() {
   const [loading, setLoading] = useState(false);
   const [verificationCode, setVerificationCode] = useState("");
   const [awaitingCode, setAwaitingCode] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
 
   useEffect(() => {
     if (window.localStorage.getItem("3dot-has-account") === "true") setMode("signin");
@@ -57,7 +58,10 @@ export function AuthForm() {
     <label className="mt-7 block text-sm font-semibold">Email address</label>
     <input value={email} onChange={(event) => setEmail(event.target.value)} type="email" placeholder="you@company.ae" className="mt-2 w-full rounded-xl border border-slate-300 px-4 py-3 outline-none transition focus:border-violet-500 focus:ring-4 focus:ring-violet-100" />
     <label className="mt-5 block text-sm font-semibold">Password</label>
-    <input value={password} onChange={(event) => setPassword(event.target.value)} type="password" minLength={6} placeholder="At least 6 characters" className="mt-2 w-full rounded-xl border border-slate-300 px-4 py-3 outline-none transition focus:border-violet-500 focus:ring-4 focus:ring-violet-100" />
+    <div className="relative mt-2">
+      <input value={password} onChange={(event) => setPassword(event.target.value)} type={showPassword ? "text" : "password"} minLength={6} placeholder="At least 6 characters" className="w-full rounded-xl border border-slate-300 px-4 py-3 pr-14 outline-none transition focus:border-violet-500 focus:ring-4 focus:ring-violet-100" />
+      <button type="button" onClick={() => setShowPassword(!showPassword)} aria-label={showPassword ? "Hide password" : "Show password"} className="absolute inset-y-0 right-0 px-4 text-sm font-semibold text-violet-700">{showPassword ? "Hide" : "Show"}</button>
+    </div>
     {message && <p className="mt-4 rounded-lg bg-violet-50 p-3 text-sm text-violet-800">{message}</p>}
     <button onClick={submit} disabled={loading} className="mt-7 w-full rounded-xl bg-slate-950 px-4 py-3 font-semibold text-white transition hover:bg-slate-800 disabled:opacity-60">{loading ? "Please wait..." : mode === "signin" ? "Sign in" : "Create account"}</button>
     <button onClick={() => { setMode(mode === "signin" ? "signup" : "signin"); setMessage(""); }} className="mt-5 w-full text-sm font-semibold text-violet-700">{mode === "signin" ? "New to 3DOT? Create an account" : "Already have an account? Sign in"}</button>
