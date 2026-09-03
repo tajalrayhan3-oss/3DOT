@@ -50,7 +50,11 @@ export function AuthForm() {
   </div>;
 
   return <div>
-    <label className="mt-10 block text-sm font-semibold">Email address</label>
+    <div className="mt-10">
+      <h3 className="text-2xl font-bold text-slate-950">{mode === "signup" ? "Create your account" : "Sign in to 3DOT"}</h3>
+      <p className="mt-1 text-sm text-slate-500">{mode === "signup" ? "Start managing your construction work in one place." : "Enter your details to continue to your workspace."}</p>
+    </div>
+    <label className="mt-7 block text-sm font-semibold">Email address</label>
     <input value={email} onChange={(event) => setEmail(event.target.value)} type="email" placeholder="you@company.ae" className="mt-2 w-full rounded-xl border border-slate-300 px-4 py-3 outline-none transition focus:border-violet-500 focus:ring-4 focus:ring-violet-100" />
     <label className="mt-5 block text-sm font-semibold">Password</label>
     <input value={password} onChange={(event) => setPassword(event.target.value)} type="password" minLength={6} placeholder="At least 6 characters" className="mt-2 w-full rounded-xl border border-slate-300 px-4 py-3 outline-none transition focus:border-violet-500 focus:ring-4 focus:ring-violet-100" />
