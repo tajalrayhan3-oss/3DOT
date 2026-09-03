@@ -1,14 +1,18 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { supabase } from "@/lib/supabase/client";
 
 export function AuthForm() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [mode, setMode] = useState<"signin" | "signup">("signin");
+  const [mode, setMode] = useState<"signin" | "signup">("signup");
   const [message, setMessage] = useState("");
   const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    if (window.localStorage.getItem("3dot-has-account") === "true") setMode("signin");
+  }, []);
 
   async function submit() {
     setLoading(true); setMessage("");
@@ -17,8 +21,14 @@ export function AuthForm() {
       : await supabase.auth.signUp({ email, password, options: { emailRedirectTo: `${window.location.origin}/onboarding` } });
     setLoading(false);
     if (result.error) return setMessage(result.error.message);
-    if (mode === "signin") window.location.href = "/dashboard";
-    else setMessage("Account created. Check your email to confirm your address, then sign in.");
+    if (mode === "signin") {
+      window.localStorage.setItem("3dot-has-account", "true");
+      window.location.href = "/dashboard";
+    } else {
+      window.localStorage.setItem("3dot-has-account", "true");
+      setMessage("Account created. Check your email to confirm your address, then sign in.");
+      setMode("signin");
+    }
   }
 
   return <div>

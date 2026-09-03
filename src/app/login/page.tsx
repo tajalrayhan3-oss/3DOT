@@ -15,9 +15,9 @@ export default function LoginPage() {
       <section className="flex items-center justify-center bg-white px-6 py-16">
         <form className="w-full max-w-md">
           <Link href="/" className="text-xl font-black tracking-[0.22em] text-slate-950 lg:hidden">3DOT</Link>
-          <p className="mt-10 text-sm font-semibold uppercase tracking-[0.16em] text-violet-600">Welcome back</p>
-          <h2 className="mt-2 text-4xl font-semibold tracking-tight">Sign in to your workspace</h2>
-          <p className="mt-3 text-slate-500">Manage the work that moves your business forward.</p>
+          <p className="mt-10 text-sm font-semibold uppercase tracking-[0.16em] text-violet-600">Welcome to 3DOT</p>
+          <h2 className="mt-2 text-4xl font-semibold tracking-tight">Your construction workspace</h2>
+          <p className="mt-3 text-slate-500">Create an account to begin, or sign in to continue.</p>
           <AuthForm />
         </form>
       </section>
