@@ -10,7 +10,7 @@ export function CompanyForm() {
     setLoading(true); setMessage("");
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) { setLoading(false); return setMessage("Please sign in first."); }
-    const { error } = await supabase.from("companies").insert({ owner_id: user.id, name: formData.get("name"), trn: formData.get("trn"), city: formData.get("city"), primary_language: formData.get("language") });
+    const { error } = await supabase.from("companies").insert({ owner_id: user.id, name: formData.get("name"), trn: formData.get("trn"), city: formData.get("city") });
     setLoading(false);
     if (error) return setMessage(error.message);
     window.location.href = "/dashboard";
