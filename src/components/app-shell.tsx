@@ -26,9 +26,9 @@ export function AppShell({ title, description, children }: { title: string; desc
             ))}
           </nav>
           <div className="mt-auto rounded-2xl bg-slate-950 p-4 text-white">
-            <p className="text-sm font-semibold">7-day free trial</p>
-            <p className="mt-1 text-xs leading-5 text-white/60">Set up your company and bring every project into one place.</p>
-            <Link href="/onboarding" className="mt-4 inline-block text-sm font-semibold text-violet-300">Complete setup →</Link>
+            <p className="text-sm font-semibold">Your workspace is ready</p>
+            <p className="mt-1 text-xs leading-5 text-white/60">Add clients, projects and your site team in one place.</p>
+            <Link href="/clients" className="mt-4 inline-block text-sm font-semibold text-violet-300">Add a client →</Link>
           </div>
         </aside>
         <section className="min-w-0 flex-1">
