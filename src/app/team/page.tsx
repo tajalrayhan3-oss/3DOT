@@ -1,5 +1,5 @@
-import { ResourcePage } from "@/components/resource-page";
+import { TeamTimesheetResource } from "@/components/team-timesheet-resource";
 
 export default function TeamPage() {
-  return <ResourcePage title="Team" description="Manage employees, roles and site access." action="Add employee" columns={["Employee", "Role", "Status", "Monthly cost"]} rows={[]} />;
+  return <TeamTimesheetResource type="team" />;
 }
