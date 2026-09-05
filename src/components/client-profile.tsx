@@ -17,12 +17,10 @@ export function ClientProfile({ id }: { id: string }) {
   async function load() {
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) { window.location.href = "/login"; return; }
-    const { data: company } = await supabase.from("companies").select("id").eq("owner_id", user.id).order("created_at", { ascending: false }).limit(1).maybeSingle();
-    if (!company) return setMessage("Complete company setup first.");
-    const { data, error } = await supabase.from("clients").select("id,name,contact_name,email,phone,trn,address,website,status").eq("id", id).eq("company_id", company.id).maybeSingle();
+    const { data, error } = await supabase.from("clients").select("id,name,contact_name,email,phone,trn,address,website,status").eq("id", id).maybeSingle();
     if (error || !data) return setMessage(error?.message || "Client not found.");
     setClient(data as Client);
-    const { data: projectData } = await supabase.from("projects").select("id,name,status,location,contract_value").eq("client_id", id).eq("company_id", company.id).order("created_at", { ascending: false });
+    const { data: projectData } = await supabase.from("projects").select("id,name,status,location,contract_value").eq("client_id", id).order("created_at", { ascending: false });
     setProjects((projectData ?? []) as Project[]);
     setMessage("");
   }
