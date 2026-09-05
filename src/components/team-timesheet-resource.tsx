@@ -32,7 +32,7 @@ export function TeamTimesheetResource({ type }: { type: "team" | "timesheets" })
     const [{ data: staff }, { data: projectRows }, { data: timeRows }, { data: assignmentRows }] = await Promise.all([
       supabase.from("employees").select("*").eq("company_id", company.id).order("created_at", { ascending: false }),
       supabase.from("projects").select("id,name,clients(name)").eq("company_id", company.id).order("name"),
-      supabase.from("timesheets").select("*, employees(full_name), projects(name)").eq("company_id", company.id).order("work_date", { ascending: false }),
+      supabase.from("timesheets").select("*, employees(name), projects(name)").eq("company_id", company.id).order("work_date", { ascending: false }),
       supabase.from("employee_assignments").select("id,active,employees(name),projects(name,clients(name))").eq("company_id", company.id).eq("active", true).order("created_at", { ascending: false }),
     ]);
     setEmployees(staff ?? []); setProjects((projectRows as Project[] | null) ?? []); setTimesheets((timeRows as Timesheet[] | null) ?? []); setAssignments((assignmentRows as Assignment[] | null) ?? []);
