@@ -1,5 +1,5 @@
-import { ResourcePage } from "@/components/resource-page";
+import { FinancialResource } from "@/components/financial-resource";
 
 export default function InvoicesPage() {
-  return <ResourcePage title="Invoices" description="Issue invoices and follow payment status." action="New invoice" columns={["Invoice", "Client", "Status", "Amount"]} rows={[]} />;
+  return <FinancialResource type="invoices" />;
 }

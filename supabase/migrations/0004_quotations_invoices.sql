@@ -15,5 +15,7 @@ create table if not exists public.invoices (
 alter table public.quotations enable row level security;
 alter table public.invoices enable row level security;
 grant select, insert, update, delete on public.quotations, public.invoices to authenticated;
+drop policy if exists "Owners manage quotations" on public.quotations;
+drop policy if exists "Owners manage invoices" on public.invoices;
 create policy "Owners manage quotations" on public.quotations for all to authenticated using (exists(select 1 from public.companies c where c.id=company_id and c.owner_id=(select auth.uid()))) with check (exists(select 1 from public.companies c where c.id=company_id and c.owner_id=(select auth.uid())));
 create policy "Owners manage invoices" on public.invoices for all to authenticated using (exists(select 1 from public.companies c where c.id=company_id and c.owner_id=(select auth.uid()))) with check (exists(select 1 from public.companies c where c.id=company_id and c.owner_id=(select auth.uid())));
