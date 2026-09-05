@@ -16,7 +16,7 @@ export function FinancialDocument({ type, id }: { type: "quotations" | "invoices
   useEffect(() => { void (async () => {
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) return setMessage("Please sign in to view this document.");
-    const { data: workspace, error: companyError } = await supabase.from("companies").select("id,name,trn,city,email,phone,address,website,logo_url,letterhead_url,signature_url,stamp_url,document_footer").eq("owner_id", user.id).maybeSingle();
+    const { data: workspace, error: companyError } = await supabase.from("companies").select("id,name,trn,city,email,phone,address,website,logo_url,letterhead_url,signature_url,stamp_url,document_footer").eq("owner_id", user.id).order("created_at", { ascending: false }).limit(1).maybeSingle();
     if (companyError || !workspace) return setMessage(companyError?.message || "Company setup is required.");
     const fields = quotation ? "number,title,amount,status,clients(name,trn,email,phone,address,website)" : "number,amount,status,due_date,clients(name,trn,email,phone,address,website)";
     const { data, error } = await supabase.from(type).select(fields).eq("company_id", (workspace as Company).id).eq("id", id).maybeSingle();

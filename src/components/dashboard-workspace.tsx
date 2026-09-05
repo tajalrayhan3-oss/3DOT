@@ -16,7 +16,7 @@ export function DashboardWorkspace() {
   useEffect(() => { void (async () => {
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) return setMessage("Please sign in to view your workspace.");
-    const { data: company, error } = await supabase.from("companies").select("id").eq("owner_id", user.id).maybeSingle();
+    const { data: company, error } = await supabase.from("companies").select("id").eq("owner_id", user.id).order("created_at", { ascending: false }).limit(1).maybeSingle();
     if (error) return setMessage(error.message);
     if (!company) return setMessage("Complete company setup to view your workspace.");
     const today = new Date();

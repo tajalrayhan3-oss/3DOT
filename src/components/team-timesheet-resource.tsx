@@ -22,7 +22,7 @@ export function TeamTimesheetResource({ type }: { type: "team" | "timesheets" })
   async function load() {
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) { setMessage("Please sign in to manage your workspace."); return; }
-    const { data: company } = await supabase.from("companies").select("id").eq("owner_id", user.id).maybeSingle();
+    const { data: company } = await supabase.from("companies").select("id").eq("owner_id", user.id).order("created_at", { ascending: false }).limit(1).maybeSingle();
     if (!company) { setMessage("Complete company setup first."); return; }
     setCompanyId(company.id);
     const [{ data: staff }, { data: projectRows }, { data: timeRows }, { data: assignmentRows }] = await Promise.all([
