@@ -5,7 +5,7 @@ import { supabase } from "@/lib/supabase/client";
 
 type Company = { id: string; name: string; trn: string | null; city: string | null; email: string | null; phone: string | null; address: string | null; website: string | null; logo_url: string | null; letterhead_url: string | null; signature_url: string | null; stamp_url: string | null; document_footer: string | null };
 
-export function CompanyForm() {
+export function CompanyForm({ redirectTo = "/dashboard" }: { redirectTo?: string | null }) {
   const [message, setMessage] = useState("");
   const [loading, setLoading] = useState(false);
   const [company, setCompany] = useState<Company | null>(null);
@@ -38,7 +38,8 @@ export function CompanyForm() {
       : await supabase.from("companies").insert({ owner_id: user.id, ...values });
     setLoading(false);
     if (error) return setMessage(error.message);
-    window.location.href = "/dashboard";
+    if (redirectTo) window.location.href = redirectTo;
+    else setMessage("Company profile saved successfully.");
     } catch (uploadError) {
       setLoading(false);
       setMessage(uploadError instanceof Error ? uploadError.message : "Image upload failed. Please try again.");

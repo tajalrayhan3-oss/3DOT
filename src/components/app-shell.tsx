@@ -9,6 +9,7 @@ const navigation = [
   ["Timesheets", "/timesheets"],
   ["Quotations", "/quotations"],
   ["Invoices", "/invoices"],
+  ["Company & account", "/company"],
 ];
 
 export function AppShell({ title, description, children }: { title: string; description: string; children: ReactNode }) {
@@ -39,7 +40,7 @@ export function AppShell({ title, description, children }: { title: string; desc
               <p className="mt-1 text-sm text-slate-500">{description}</p>
             </div>
             <div className="flex items-center gap-3">
-              <Link href="/onboarding" className="hidden rounded-lg border border-slate-200 px-3 py-2 text-sm font-semibold sm:block">Company setup</Link>
+              <Link href="/company" className="hidden rounded-lg border border-slate-200 px-3 py-2 text-sm font-semibold sm:block">Company & account</Link>
               <div className="grid h-10 w-10 place-items-center rounded-full bg-violet-100 text-sm font-bold text-violet-700">TR</div>
             </div>
           </header>
