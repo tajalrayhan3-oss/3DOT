@@ -44,6 +44,12 @@ export function TeamTimesheetResource({ type }: { type: "team" | "timesheets" })
     setMessage(error ? error.message : "Timesheet submitted."); if (!error) { event.currentTarget.reset(); setShowForm(false); load(); }
   }
 
+  async function updateEmployeeStatus(id: string, active: boolean) {
+    const { error } = await supabase.from("employees").update({ active }).eq("id", id);
+    setMessage(error ? error.message : "Employee status updated.");
+    if (!error) await load();
+  }
+
   const isTeam = type === "team";
   return <AppShell title={isTeam ? "Team" : "Timesheets"} description={isTeam ? "Manage employees, roles and site access." : "Track work hours across every construction site."}>
     <div className="flex items-center justify-between"><p className="text-sm text-slate-500">{isTeam ? `${employees.length} employees` : `${timesheets.length} timesheets`}</p><button onClick={() => setShowForm(!showForm)} className="rounded-xl bg-slate-950 px-4 py-3 text-sm font-semibold text-white">+ Add {isTeam ? "employee" : "timesheet"}</button></div>
@@ -52,6 +58,6 @@ export function TeamTimesheetResource({ type }: { type: "team" | "timesheets" })
       <button className="w-fit rounded-xl bg-violet-600 px-4 py-3 text-sm font-semibold text-white">Save</button>
     </form>}
     {message && <p className="mt-4 text-sm text-violet-700">{message}</p>}
-    <section className="mt-6 overflow-hidden rounded-2xl border border-slate-200 bg-white">{isTeam ? employees.map(e => <article key={e.id} className="flex items-center justify-between border-b p-5 last:border-0"><div><p className="font-semibold">{e.name}</p><p className="text-sm text-slate-500">{e.job_title ?? "Employee"}{e.email ? ` · ${e.email}` : ""}</p></div><span className="rounded-full bg-violet-50 px-3 py-1 text-xs font-semibold text-violet-700">{e.active ? "active" : "inactive"}</span></article>) : timesheets.map(t => <article key={t.id} className="flex items-center justify-between border-b p-5 last:border-0"><div><p className="font-semibold">{t.employees?.name ?? "Employee"} · {t.hours}h</p><p className="text-sm text-slate-500">{t.work_date}{t.projects ? ` · ${t.projects.name}` : ""}</p></div><span className="rounded-full bg-violet-50 px-3 py-1 text-xs font-semibold text-violet-700">submitted</span></article>)}{(isTeam ? employees : timesheets).length === 0 && <p className="p-6 text-sm text-slate-500">Nothing added yet.</p>}</section>
+    <section className="mt-6 overflow-hidden rounded-2xl border border-slate-200 bg-white">{isTeam ? employees.map(e => <article key={e.id} className="flex items-center justify-between border-b p-5 last:border-0"><div><p className="font-semibold">{e.name}</p><p className="text-sm text-slate-500">{e.job_title ?? "Employee"}{e.email ? ` · ${e.email}` : ""}</p></div><select aria-label={`${e.name} status`} value={e.active ? "active" : "inactive"} onChange={(event) => void updateEmployeeStatus(e.id, event.target.value === "active")} className="rounded-full border border-violet-200 bg-violet-50 px-3 py-1 text-xs font-semibold text-violet-700"><option value="active">active</option><option value="inactive">inactive</option></select></article>) : timesheets.map(t => <article key={t.id} className="flex items-center justify-between border-b p-5 last:border-0"><div><p className="font-semibold">{t.employees?.name ?? "Employee"} · {t.hours}h</p><p className="text-sm text-slate-500">{t.work_date}{t.projects ? ` · ${t.projects.name}` : ""}</p></div><span className="rounded-full bg-violet-50 px-3 py-1 text-xs font-semibold text-violet-700">submitted</span></article>)}{(isTeam ? employees : timesheets).length === 0 && <p className="p-6 text-sm text-slate-500">Nothing added yet.</p>}</section>
   </AppShell>;
 }
