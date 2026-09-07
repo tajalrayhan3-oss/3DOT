@@ -1,19 +1,36 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
-
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
   --font-sans: Arial, Helvetica, sans-serif;
   --font-mono: "Courier New", monospace;
+  --color-slate-50: #f6f7f2;
+  --color-slate-100: #edf0e8;
+  --color-slate-200: #dce2d7;
+  --color-slate-300: #c7d0c2;
+  --color-slate-400: #7b897b;
+  --color-slate-500: #5d6a5e;
+  --color-slate-600: #455146;
+  --color-slate-700: #314032;
+  --color-slate-800: #202b22;
+  --color-slate-900: #142017;
+  --color-slate-950: #0a130d;
+  --color-violet-50: #fff3e9;
+  --color-violet-100: #ffe1ca;
+  --color-violet-200: #ffc69e;
+  --color-violet-300: #ffa86e;
+  --color-violet-400: #ef874d;
+  --color-violet-500: #de6834;
+  --color-violet-600: #bf4f22;
+  --color-violet-700: #963c1c;
+  --color-violet-800: #773319;
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
-}
+:root { --background: #f6f7f2; --foreground: #142017; }
+* { box-sizing: border-box; }
+html { background: var(--background); }
+body { min-width: 320px; background: var(--background); color: var(--foreground); font-family: Arial, Helvetica, sans-serif; }
+button, input, select, textarea { font: inherit; }
+button { cursor: pointer; }
+::selection { background: #ffc69e; color: #0a130d; }
+.construction-grid { background-image: linear-gradient(rgba(20,32,23,.055) 1px, transparent 1px), linear-gradient(90deg, rgba(20,32,23,.055) 1px, transparent 1px); background-size: 32px 32px; }
+.eyebrow { letter-spacing: .16em; }
