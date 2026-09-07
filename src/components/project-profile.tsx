@@ -18,7 +18,7 @@ type Project = {
 };
 type Assignment = {
   id: string;
-  employees: { name: string; job_title: string | null }[] | null;
+  employees: { id: string; name: string; job_title: string | null }[] | null;
 };
 type ProjectUpdate = {
   id: string;
@@ -44,6 +44,16 @@ type ProjectExpense = {
   payment_method: string | null;
   reference: string | null;
 };
+type ProjectTask = {
+  id: string;
+  title: string;
+  notes: string | null;
+  due_date: string | null;
+  priority: string;
+  status: string;
+  assigned_employee_id: string | null;
+  employees: { name: string }[] | null;
+};
 
 export function ProjectProfile({ id }: { id: string }) {
   const [project, setProject] = useState<Project | null>(null);
@@ -52,10 +62,12 @@ export function ProjectProfile({ id }: { id: string }) {
   const [updates, setUpdates] = useState<ProjectUpdate[]>([]);
   const [files, setFiles] = useState<ProjectFile[]>([]);
   const [expenses, setExpenses] = useState<ProjectExpense[]>([]);
+  const [tasks, setTasks] = useState<ProjectTask[]>([]);
   const [userId, setUserId] = useState("");
   const [editing, setEditing] = useState(false);
   const [addingUpdate, setAddingUpdate] = useState(false);
   const [addingExpense, setAddingExpense] = useState(false);
+  const [addingTask, setAddingTask] = useState(false);
   const [uploading, setUploading] = useState(false);
   const [message, setMessage] = useState("Loading project…");
 
@@ -85,7 +97,7 @@ export function ProjectProfile({ id }: { id: string }) {
     setClients((clientData ?? []) as Client[]);
     const { data: assignmentData } = await supabase
       .from("employee_assignments")
-      .select("id,employees(name,job_title)")
+      .select("id,employees(id,name,job_title)")
       .eq("project_id", id)
       .eq("active", true);
     setAssignments((assignmentData ?? []) as unknown as Assignment[]);
@@ -114,6 +126,13 @@ export function ProjectProfile({ id }: { id: string }) {
       .order("created_at", { ascending: false });
     if (expenseError) return setMessage(expenseError.message);
     setExpenses((expenseData ?? []) as ProjectExpense[]);
+    const { data: taskData, error: taskError } = await supabase
+      .from("project_tasks")
+      .select("id,title,notes,due_date,priority,status,assigned_employee_id,employees(name)")
+      .eq("project_id", id)
+      .order("created_at", { ascending: false });
+    if (taskError) return setMessage(taskError.message);
+    setTasks((taskData ?? []) as unknown as ProjectTask[]);
     setMessage("");
   }
   useEffect(() => {
@@ -214,6 +233,39 @@ export function ProjectProfile({ id }: { id: string }) {
     setAddingExpense(false);
     await load();
     setMessage("Project expense saved successfully.");
+  }
+
+  async function saveTask(formData: FormData) {
+    if (!project) return;
+    const { error } = await supabase.from("project_tasks").insert({
+      company_id: project.company_id,
+      project_id: project.id,
+      assigned_employee_id: String(formData.get("assigned_employee_id") || "") || null,
+      title: String(formData.get("title")),
+      notes: String(formData.get("notes") || "") || null,
+      due_date: String(formData.get("due_date") || "") || null,
+      priority: String(formData.get("priority")),
+    });
+    if (error) return setMessage(error.message);
+    setAddingTask(false);
+    await load();
+    setMessage("Project task saved successfully.");
+  }
+
+  async function changeTaskStatus(
+    task: ProjectTask,
+    status: "pending" | "in_progress" | "completed",
+  ) {
+    const { error } = await supabase
+      .from("project_tasks")
+      .update({
+        status,
+        completed_at: status === "completed" ? new Date().toISOString() : null,
+      })
+      .eq("id", task.id);
+    if (error) return setMessage(error.message);
+    await load();
+    setMessage(status === "completed" ? "Task marked as completed." : "Task status updated.");
   }
 
   if (!project)
@@ -376,6 +428,33 @@ export function ProjectProfile({ id }: { id: string }) {
               </div>
             </>
           )}
+        </section>
+        <section className="mt-6 rounded-3xl border border-slate-200 bg-white p-7 shadow-sm">
+          <div className="flex flex-wrap items-center justify-between gap-4">
+            <div>
+              <p className="text-sm font-semibold uppercase tracking-[0.16em] text-violet-600">Tasks & milestones</p>
+              <h2 className="mt-2 text-xl font-bold">Project work plan</h2>
+            </div>
+            <button type="button" onClick={() => setAddingTask(!addingTask)} className="rounded-xl bg-violet-600 px-4 py-3 text-sm font-semibold text-white">+ Add task</button>
+          </div>
+          {addingTask && (
+            <form action={saveTask} className="mt-5 grid gap-3 rounded-xl bg-violet-50 p-5 sm:grid-cols-2">
+              <label className="text-sm font-semibold sm:col-span-2">Task title<input required name="title" placeholder="e.g. Complete ground-floor plaster" className="mt-2 w-full rounded-xl border border-slate-300 bg-white px-4 py-3 font-normal" /></label>
+              <label className="text-sm font-semibold">Responsible employee<select name="assigned_employee_id" defaultValue="" className="mt-2 w-full rounded-xl border border-slate-300 bg-white px-4 py-3 font-normal"><option value="">Not assigned</option>{assignments.map((assignment) => { const employee = assignment.employees?.[0]; return employee ? <option key={employee.id} value={employee.id}>{employee.name}</option> : null; })}</select></label>
+              <label className="text-sm font-semibold">Due date<input name="due_date" type="date" className="mt-2 w-full rounded-xl border border-slate-300 bg-white px-4 py-3 font-normal" /></label>
+              <label className="text-sm font-semibold">Priority<select name="priority" defaultValue="medium" className="mt-2 w-full rounded-xl border border-slate-300 bg-white px-4 py-3 font-normal"><option value="low">Low</option><option value="medium">Medium</option><option value="high">High</option><option value="urgent">Urgent</option></select></label>
+              <label className="text-sm font-semibold sm:col-span-2">Notes (optional)<textarea name="notes" className="mt-2 min-h-24 w-full rounded-xl border border-slate-300 bg-white px-4 py-3 font-normal" /></label>
+              <div className="flex gap-3 sm:col-span-2"><button className="rounded-xl bg-slate-950 px-4 py-3 text-sm font-semibold text-white">Save task</button><button type="button" onClick={() => setAddingTask(false)} className="rounded-xl border border-slate-300 bg-white px-4 py-3 text-sm font-semibold">Cancel</button></div>
+            </form>
+          )}
+          <div className="mt-5 space-y-3">
+            {tasks.map((task) => (
+              <article key={task.id} className={`rounded-xl border p-4 ${task.status === "completed" ? "border-emerald-200 bg-emerald-50" : "border-slate-200"}`}>
+                <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between"><div><div className="flex flex-wrap items-center gap-2"><h3 className={`font-semibold ${task.status === "completed" ? "line-through text-slate-500" : ""}`}>{task.title}</h3><span className="rounded-full bg-violet-100 px-2 py-1 text-xs font-bold capitalize text-violet-700">{task.priority}</span></div><p className="mt-1 text-sm text-slate-500">{task.employees?.[0]?.name || "Not assigned"}{task.due_date ? ` · Due ${new Date(`${task.due_date}T00:00:00`).toLocaleDateString("en-AE")}` : ""}</p>{task.notes && <p className="mt-2 text-sm text-slate-600">{task.notes}</p>}</div><select aria-label={`Status for ${task.title}`} value={task.status} onChange={(event) => void changeTaskStatus(task, event.target.value as "pending" | "in_progress" | "completed")} className="rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm font-semibold"><option value="pending">Pending</option><option value="in_progress">In progress</option><option value="completed">Completed</option></select></div>
+              </article>
+            ))}
+            {tasks.length === 0 && <p className="rounded-xl bg-slate-50 p-5 text-sm text-slate-500">No project tasks yet. Add the first task above.</p>}
+          </div>
         </section>
         <section className="mt-6 rounded-3xl border border-slate-200 bg-white p-7 shadow-sm">
           <div className="flex flex-wrap items-center justify-between gap-4">
