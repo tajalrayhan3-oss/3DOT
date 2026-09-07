@@ -1,52 +1,6 @@
+"use client";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import type { ReactNode } from "react";
-
-const navigation = [
-  ["Dashboard", "/dashboard"],
-  ["Clients", "/clients"],
-  ["Projects", "/projects"],
-  ["Team", "/team"],
-  ["Timesheets", "/timesheets"],
-  ["Quotations", "/quotations"],
-  ["Invoices", "/invoices"],
-  ["Company & account", "/company"],
-];
-
-export function AppShell({ title, description, children }: { title: string; description: string; children: ReactNode }) {
-  return (
-    <main className="min-h-screen bg-slate-50 text-slate-900">
-      <div className="mx-auto flex min-h-screen max-w-[1440px]">
-        <aside className="hidden w-64 shrink-0 flex-col border-r border-slate-200 bg-white p-6 lg:flex">
-          <Link href="/dashboard" className="text-xl font-black tracking-[0.22em] text-slate-950">3DOT</Link>
-          <p className="mt-2 text-xs font-medium text-slate-400">CONSTRUCTION MANAGEMENT</p>
-          <nav className="mt-10 space-y-1">
-            {navigation.map(([label, href]) => (
-              <Link key={href} href={href} className="block rounded-xl px-4 py-3 text-sm font-medium text-slate-600 transition hover:bg-violet-50 hover:text-violet-700">
-                {label}
-              </Link>
-            ))}
-          </nav>
-          <div className="mt-auto rounded-2xl bg-slate-950 p-4 text-white">
-            <p className="text-sm font-semibold">Your workspace is ready</p>
-            <p className="mt-1 text-xs leading-5 text-white/60">Add clients, projects and your site team in one place.</p>
-            <Link href="/clients" className="mt-4 inline-block text-sm font-semibold text-violet-300">Add a client →</Link>
-          </div>
-        </aside>
-        <section className="min-w-0 flex-1">
-          <header className="flex items-center justify-between border-b border-slate-200 bg-white px-6 py-5 sm:px-10">
-            <div>
-              <p className="text-xs font-semibold uppercase tracking-[0.14em] text-violet-600">3DOT workspace</p>
-              <h1 className="mt-1 text-xl font-bold">{title}</h1>
-              <p className="mt-1 text-sm text-slate-500">{description}</p>
-            </div>
-            <div className="flex items-center gap-3">
-              <Link href="/company" className="hidden rounded-lg border border-slate-200 px-3 py-2 text-sm font-semibold sm:block">Company & account</Link>
-              <div className="grid h-10 w-10 place-items-center rounded-full bg-violet-100 text-sm font-bold text-violet-700">TR</div>
-            </div>
-          </header>
-          <div className="p-6 sm:p-10">{children}</div>
-        </section>
-      </div>
-    </main>
-  );
-}
+const navigation = [["Dashboard","/dashboard","01"],["Clients","/clients","02"],["Projects","/projects","03"],["Team","/team","04"],["Timesheets","/timesheets","05"],["Quotations","/quotations","06"],["Invoices","/invoices","07"]];
+export function AppShell({title,description,children}:{title:string;description:string;children:ReactNode}) { const pathname=usePathname(); return <main className="min-h-screen bg-slate-50 text-slate-900"><div className="mx-auto flex min-h-screen max-w-[1600px]"><aside className="hidden w-72 shrink-0 flex-col bg-slate-950 px-6 py-7 text-white lg:flex"><Link href="/dashboard" className="inline-flex items-center gap-3"><span className="grid h-10 w-10 place-items-center bg-violet-400 text-sm font-black text-slate-950">3.</span><span className="text-xl font-black tracking-[.18em]">3DOT</span></Link><p className="mt-5 border-t border-white/10 pt-5 text-[11px] font-bold tracking-[.18em] text-white/45">PROJECT CONTROL SYSTEM</p><nav className="mt-8 space-y-1">{navigation.map(([label,href,number])=>{const active=pathname===href||(href!=="/dashboard"&&pathname.startsWith(href+"/"));return <Link key={href} href={href} className={active?"group flex items-center justify-between border-l-2 border-violet-400 bg-white/10 px-4 py-3 text-sm font-semibold text-white":"group flex items-center justify-between border-l-2 border-transparent px-4 py-3 text-sm font-semibold text-white/55 transition hover:border-white/30 hover:bg-white/5 hover:text-white"}><span>{label}</span><span className={active?"text-[10px] tracking-widest text-violet-300":"text-[10px] tracking-widest text-white/25"}>{number}</span></Link>})}</nav><div className="mt-auto border-t border-white/10 pt-6"><p className="text-xs font-bold uppercase tracking-[.14em] text-violet-300">Workspace</p><Link href="/company" className="mt-3 flex items-center justify-between text-sm font-semibold text-white hover:text-violet-300"><span>Company & account</span><span>→</span></Link></div></aside><section className="min-w-0 flex-1"><header className="border-b border-slate-200 bg-slate-50 px-6 py-5 sm:px-10 lg:px-12"><div className="flex items-start justify-between gap-4"><div><p className="eyebrow text-[11px] font-black uppercase text-violet-700">3DOT / Operations</p><h1 className="mt-2 text-2xl font-black tracking-tight sm:text-3xl">{title}</h1><p className="mt-2 max-w-2xl text-sm text-slate-500">{description}</p></div><div className="flex items-center gap-3"><Link href="/company" className="hidden border border-slate-300 bg-white px-4 py-2.5 text-sm font-bold transition hover:border-slate-950 sm:block">Company & account</Link><div className="grid h-10 w-10 place-items-center rounded-full bg-slate-950 text-xs font-black text-violet-300">TR</div></div></div></header><div className="construction-grid min-h-[calc(100vh-132px)] p-5 sm:p-8 lg:p-12">{children}</div></section></div></main> }
