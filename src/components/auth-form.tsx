@@ -43,11 +43,19 @@ export function AuthForm() {
     window.location.href = "/onboarding";
   }
 
+  async function sendPasswordReset() {
+    if (!email) return setMessage("Enter your email address first.");
+    setLoading(true); setMessage("");
+    const { error } = await supabase.auth.resetPasswordForEmail(email, { redirectTo: `${window.location.origin}/reset-password` });
+    setLoading(false);
+    setMessage(error ? error.message : "Password reset email sent. Open the email and click the reset button.");
+  }
+
   if (awaitingCode) return <div>
     <p className="mt-10 text-sm font-semibold">Enter the 6-digit code sent to {email}</p>
     <input value={verificationCode} onChange={(event) => setVerificationCode(event.target.value.replace(/\D/g, "").slice(0, 6))} inputMode="numeric" autoComplete="one-time-code" placeholder="123456" className="mt-3 w-full rounded-xl border border-slate-300 px-4 py-3 text-center text-xl tracking-[0.5em] outline-none focus:border-violet-500" />
     {message && <p className="mt-4 rounded-lg bg-violet-50 p-3 text-sm text-violet-800">{message}</p>}
-    <button onClick={confirmCode} disabled={loading || verificationCode.length !== 6} className="mt-5 w-full rounded-xl bg-slate-950 px-4 py-3 font-semibold text-white disabled:opacity-60">{loading ? "Checking code..." : "Verify code"}</button>
+    <button type="button" onClick={confirmCode} disabled={loading || verificationCode.length !== 6} className="mt-5 w-full rounded-xl bg-slate-950 px-4 py-3 font-semibold text-white disabled:opacity-60">{loading ? "Checking code..." : "Verify code"}</button>
   </div>;
 
   return <div>
@@ -65,7 +73,8 @@ export function AuthForm() {
       </button>
     </div>
     {message && <p className="mt-4 rounded-lg bg-violet-50 p-3 text-sm text-violet-800">{message}</p>}
-    <button onClick={submit} disabled={loading} className="mt-7 w-full rounded-xl bg-slate-950 px-4 py-3 font-semibold text-white transition hover:bg-slate-800 disabled:opacity-60">{loading ? "Please wait..." : mode === "signin" ? "Sign in" : "Create account"}</button>
-    <button onClick={() => { setMode(mode === "signin" ? "signup" : "signin"); setMessage(""); }} className="mt-5 w-full text-sm font-semibold text-violet-700">{mode === "signin" ? "New to 3DOT? Create an account" : "Already have an account? Sign in"}</button>
+    {mode === "signin" && <button type="button" onClick={sendPasswordReset} disabled={loading} className="mt-3 block w-full text-right text-sm font-semibold text-violet-700">Forgot password?</button>}
+    <button type="button" onClick={submit} disabled={loading} className="mt-7 w-full rounded-xl bg-slate-950 px-4 py-3 font-semibold text-white transition hover:bg-slate-800 disabled:opacity-60">{loading ? "Please wait..." : mode === "signin" ? "Sign in" : "Create account"}</button>
+    <button type="button" onClick={() => { setMode(mode === "signin" ? "signup" : "signin"); setMessage(""); }} className="mt-5 w-full text-sm font-semibold text-violet-700">{mode === "signin" ? "New to 3DOT? Create an account" : "Already have an account? Sign in"}</button>
   </div>;
 }
